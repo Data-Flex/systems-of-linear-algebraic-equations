@@ -3,7 +3,7 @@
 class three_diag_table
 {
 public:
-	three_diag_table(std::vector<double> A, std::vector<double> B, std::vector<double> C);
+	three_diag_table(const std::vector<double>& A, const std::vector<double>& B, const std::vector<double>& C);
 	std::vector<double> a, b, c;
 };
 

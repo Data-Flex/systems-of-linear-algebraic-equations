@@ -1,12 +1,12 @@
 #include "progonka.h"
 #include <iostream>
 
-std::vector<double> progonka(three_diag_table table, std::vector<double> d) {
+std::vector<double> progonka(const three_diag_table& table, const std::vector<double>& d) {
 	int n = d.size() - 1;
 	std::vector<double> x, p, q;
 	x.resize(n + 1); p.resize(n + 1); q.resize(n + 1);
-	p[0] = -table.c[0] / table.b[0];
-	q[0] = d[0] / table.b[0];
+	p[1] = -table.c[0] / table.b[0];
+	q[1] = d[0] / table.b[0];
 	for (int i = 1; i < n; i++) {
 
 		p[i + 1] = -table.c[i] / (table.a[i - 1] * p[i] + table.b[i]);
