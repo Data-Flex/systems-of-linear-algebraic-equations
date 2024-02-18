@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/run_test1.dir/test1.cpp.o -o run_test1  ../src/libSlae.a /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a 
