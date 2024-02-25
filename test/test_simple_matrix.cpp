@@ -12,4 +12,3 @@ TEST(simple, test1)
 		EXPECT_NEAR(C[i], ans[i], 0.01);
 	}
 }
-

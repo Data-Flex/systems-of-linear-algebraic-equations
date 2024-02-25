@@ -3,7 +3,7 @@
 CSR::CSR(const simple_matrix& M) {
 	int count_nonzero = 0;
 	nonzero.push_back(0);
-	for (int i = 0; i < M.get_heigth(); i++) {
+	for (int i = 0; i < M.get_height(); i++) {
 		for (int j = 0; j < M.get_width(); j++) {
 			if (M(i, j) != 0) {
 				elements.push_back(M(i, j));

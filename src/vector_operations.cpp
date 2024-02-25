@@ -1,4 +1,5 @@
 #include "vector_operations.h"
+#include<cmath>
 
 double operator*(const std::vector<double>& a, const std::vector<double>& b) {
     double scalar_product = 0;
@@ -22,6 +23,21 @@ std::vector<double> operator+(const std::vector<double>& a, const std::vector<do
     return sum;
 }
 
+std::vector<double> operator-(const std::vector<double>& a, const std::vector<double>& b) {
+    std::vector<double> sum;
+    for (int i = 0; i < a.size(); i++) sum.push_back(a[i] - b[i]);
+    return sum;
+}
+
+
+double abs(const std::vector<double>& vec) {
+    return sqrt(vec * vec);
+}
+
+
+double sign(double a) {
+    return a > 0 ? 1 : a < 0 ? -1 : 0;
+}
 
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
     for (int i = 0; i < vec.size(); i++) {
