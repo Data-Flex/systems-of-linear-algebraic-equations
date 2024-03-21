@@ -1,4 +1,4 @@
-#include "CSR.h"
+#include"CSR.h"
 
 CSR::CSR(const simple_matrix& M) {
 	int count_nonzero = 0;
@@ -44,11 +44,29 @@ int CSR::get_height() {
 }
 
 
+double CSR::lambda_max()
+{
+	double tol = 1e-20;
+	std::vector<double> r(max(columns)+1);
+	for (int i = 0; i < r.size(); i++)
+		r[i] = 1;
+	double mu = 0, prev;
+	
+	for (int i = 0; i < 10000; i++)
+	{	
+		prev = mu;
+		r = (*(this) * r) / abs(*(this) * r);
+		mu = r * (*(this) * r) / (r*r);
+		if (mu - prev < tol) break;
+	}
+	return mu;
+
+}
 
 
-std::vector<double> CSR::MPI(const std::vector <double>& b, std::vector <double> x, const int Nmax, const double Tol) {
-	double tay = 0.2;
-	std::vector <double> res = x;
+std::vector<double> CSR::MPI(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
+	double tay = 0.01;
+	std::vector <double> res = x0;
 	for (int i = 0; i < Nmax; i++) {
 		res = res - tay * ((*this) * res - b);
 		if (abs((*this) * res - b) < Tol) { break; }
@@ -56,8 +74,22 @@ std::vector<double> CSR::MPI(const std::vector <double>& b, std::vector <double>
 	return res;
 }
 
-std::vector<double> CSR::Jacobi(const std::vector <double>& b, const std::vector <double>& x, int Nmax, double Tol) {
-	std::vector<double> res = x;
+
+int CSR::MPI_task4(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double tay) {
+	std::vector <double> res = x0;
+	int n = 0;
+	for (int i = 0; i < Nmax; i++) {
+		res = res - tay * ((*this) * res - b);
+		if (abs((*this) * res - b) < Tol) { 
+			n = i;
+			break; 
+		}
+	}
+	return n;
+}
+
+std::vector<double> CSR::Jacobi(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
+	std::vector<double> res = x0;
 	for (int N = 0; N < Nmax; N++) {
 		for (int i = 0; i < nonzero.size()-1; i++) {
 			double d = 0;
@@ -77,8 +109,8 @@ std::vector<double> CSR::Jacobi(const std::vector <double>& b, const std::vector
 	return res;
 }
 
-std::vector<double> CSR::GS(const std::vector <double>& b, const std::vector <double>& x_0, int Nmax, double Tol) {
-	std::vector<double> x = x_0;
+std::vector<double> CSR::GS(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
+	std::vector<double> x = x0;
 	double d = 0;
 	for (int N = 0; N < Nmax; N++) {
 		for (int i = 0; i < nonzero.size()-1; i++) {
@@ -97,4 +129,19 @@ std::vector<double> CSR::GS(const std::vector <double>& b, const std::vector <do
 		if (abs((*this) * x - b) < Tol) { break; }
 	}
 	return x;
+}
+
+
+std::vector<double> CSR::Cheb_accel(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double lambd_min, const double lambd_max) {
+	std::vector<int> order = { 0, 7, 3, 4, 1, 6, 2, 5 };
+	double pi = 3.14159265358979323846;
+	int n = 8;
+	std::vector<double> res = x0;
+	for (int i = 0; i < Nmax; i++) {
+		double tay = 1 / ((lambd_max + lambd_min) / 2 + (lambd_max - lambd_min) / 2 * cos(pi * (2 * order[i%8] + 1) / (2 * n)));
+		//std::cout << tay << std::endl;
+		res = res - tay * ((*this)*res - b);
+		if (abs((*this) * res - b) < Tol) { break; }
+	}
+	return res;
 }

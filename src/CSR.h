@@ -1,6 +1,7 @@
 #pragma once
 #include "simple_matrix.h"
 #include "vector_operations.h"
+#include <math.h>
 
 class CSR
 {
@@ -11,12 +12,16 @@ public:
 	int get_height();
 
 
-	std::vector<double> MPI(const std::vector <double>& b, std::vector <double> x, const int Nmax, const double Tol);
-	std::vector<double> Jacobi(const std::vector <double>& b, const std::vector <double>& x, int Nmax, double Tol);
-	std::vector<double> GS(const std::vector <double>& b, const std::vector <double>& x, int Nmax, double Tol);
+	std::vector<double> MPI(		const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	int MPI_task4(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double tay);
+	std::vector<double> Jacobi(		const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	std::vector<double> GS(			const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	std::vector<double> Cheb_accel(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double lambd_min, const double lambd_max);
+	double lambda_max();
 private:
 	std::vector<double> elements;
 	std::vector<int> columns;
 	std::vector<int> nonzero;
 };
+
 

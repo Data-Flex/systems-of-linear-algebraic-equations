@@ -1,10 +1,10 @@
 #include "vector_operations.h"
 #include<cmath>
 
-double operator*(const std::vector<double>& a, const std::vector<double>& b) {
+double operator*(const std::vector<double>& vec, const std::vector<double>& b) {
     double scalar_product = 0;
-    for (int i = 0; i < a.size(); i++) {
-        scalar_product += a[i] * b[i];
+    for (int i = 0; i < vec.size(); i++) {
+        scalar_product += vec[i] * b[i];
     }
     return scalar_product;
 }
@@ -17,17 +17,25 @@ std::vector<double> operator*(const double& num, const std::vector<double>& vec)
 }
 
 
-std::vector<double> operator+(const std::vector<double>& a, const std::vector<double>& b) {
+std::vector<double> operator+(const std::vector<double>& vec, const std::vector<double>& b) {
     std::vector<double> sum;
-    for (int i = 0; i < a.size(); i++) sum.push_back(a[i] + b[i]);
+    for (int i = 0; i < vec.size(); i++) sum.push_back(vec[i] + b[i]);
     return sum;
 }
 
-std::vector<double> operator-(const std::vector<double>& a, const std::vector<double>& b) {
+std::vector<double> operator-(const std::vector<double>& vec, const std::vector<double>& b) {
     std::vector<double> sum;
-    for (int i = 0; i < a.size(); i++) sum.push_back(a[i] - b[i]);
+    for (int i = 0; i < vec.size(); i++) sum.push_back(vec[i] - b[i]);
     return sum;
 }
+
+
+std::vector<double> operator/(const std::vector<double>& vec, const double& num) {
+    std::vector<double> new_vec;
+    for (int i = 0; i < vec.size(); i++) new_vec.push_back(vec[i]/num);
+    return new_vec;
+}
+
 
 
 double abs(const std::vector<double>& vec) {
@@ -37,6 +45,20 @@ double abs(const std::vector<double>& vec) {
 
 double sign(double a) {
     return a > 0 ? 1 : a < 0 ? -1 : 0;
+}
+
+double max(std::vector<double> const& v) {
+    double max = abs(v[0]);
+    for (int i = 0; i < v.size(); ++i)
+        if (max < abs(v[i])) max = abs(v[i]);
+    return max;
+}
+
+int max(std::vector<int> const& v) {
+    int max = abs(v[0]);
+    for (int i = 0; i < v.size(); ++i)
+        if (max < abs(v[i])) max = abs(v[i]);
+    return max;
 }
 
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
