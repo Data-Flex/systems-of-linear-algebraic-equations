@@ -60,3 +60,29 @@ TEST(iterative_methods, Cheb_accel)
 		EXPECT_NEAR(res[i], ans[i], 1e-10);
 	}
 }
+
+TEST(iterative_methods, gradient_descent) {
+	std::vector<double> data = { 5, -2, 0, -1, -2, 3, 0, -0.2, 0, 0, 7, 0, -1, -0.2, 0, 2 };
+	simple_matrix S(data, 4);
+	CSR M(S);
+	std::vector<double> v = { -4, 0, -2, 9 };
+	std::vector<double> start = { 1, 1, 1, 1 };
+	std::vector<double> res = M.gradient_descent(v, start, 1000, 0.0001);
+	std::vector<double> correct = { 0.37555555555555556, 0.56666666666666667, -0.28571428571428571, 4.74444444444444444 };
+	for (size_t i = 0; i < res.size(); i++) {
+		EXPECT_NEAR(res[i], correct[i], 0.0001);
+	}
+}
+
+TEST(iterative_methods, sym_gauss_seidel_method) {
+	std::vector<double> data = { 5, -2, 0, -1, -2, 3, 0, -0.2, 0, 0, 7, 0, -1, -0.2, 0, 2 };
+	simple_matrix S(data, 4);
+	CSR M(S);
+	std::vector<double> v = { -4, 0, -2, 9 };
+	std::vector<double> start = { 1, 1, 1, 1 };
+	std::vector<double> res = M.simmetrical_GS(v, start, 1000, 0.0001);
+	std::vector<double> correct = { 0.37555555555555556, 0.56666666666666667, -0.28571428571428571, 4.74444444444444444 };
+	for (size_t i = 0; i < res.size(); i++) {
+		EXPECT_NEAR(res[i], correct[i], 0.0001);
+	}
+}

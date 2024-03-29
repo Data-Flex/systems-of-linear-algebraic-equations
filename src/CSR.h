@@ -12,11 +12,12 @@ public:
 	int get_height();
 
 
-	std::vector<double> MPI(		const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
-	int MPI_task4(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double tay);
-	std::vector<double> Jacobi(		const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
-	std::vector<double> GS(			const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
-	std::vector<double> Cheb_accel(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double lambd_min, const double lambd_max);
+	std::vector<double> MPI(				const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	std::vector<double> Jacobi(				const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	std::vector<double> GS(					const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	std::vector<double> Cheb_accel(			const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double lambd_min, const double lambd_max);
+	std::vector<double> simmetrical_GS(		const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
+	std::vector<double> gradient_descent(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
 	double lambda_max();
 private:
 	std::vector<double> elements;

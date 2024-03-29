@@ -74,18 +74,16 @@ std::vector<double> CSR::MPI(const std::vector <double>& b, const std::vector <d
 	return res;
 }
 
-
-int CSR::MPI_task4(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double tay) {
+std::vector<double> CSR::gradient_descent(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
+	double tay = 0;
 	std::vector <double> res = x0;
-	int n = 0;
 	for (int i = 0; i < Nmax; i++) {
+		std::vector<double> r = (*this) * res - b;
+		tay = (r * r) / (r*((*this)*r));
 		res = res - tay * ((*this) * res - b);
-		if (abs((*this) * res - b) < Tol) { 
-			n = i;
-			break; 
-		}
+		if (abs((*this) * res - b) < Tol) { break; }
 	}
-	return n;
+	return res;
 }
 
 std::vector<double> CSR::Jacobi(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
@@ -144,4 +142,40 @@ std::vector<double> CSR::Cheb_accel(const std::vector <double>& b, const std::ve
 		if (abs((*this) * res - b) < Tol) { break; }
 	}
 	return res;
+}
+
+
+std::vector<double> CSR::simmetrical_GS(const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
+	std::vector<double> x = x0;
+	double d = 0;
+	for (int N = 0; N < Nmax; N++) {
+		for (int i = 0; i < nonzero.size() - 1; i++) {
+			double d = 0;
+			double sum = 0;
+			for (int k = nonzero[i]; k < nonzero[i + 1]; k++) {
+				if (i != columns[k]) {
+					sum += elements[k] * x[columns[k]];
+				}
+				else {
+					d = elements[k];
+				}
+			}
+			x[i] = (b[i] - sum) / d;
+		}
+		for (int i = nonzero.size() - 1; i >= 0; i--) {
+			double d = 0;
+			double sum = 0;
+			for (int k = nonzero[i]; k < nonzero[i + 1]; k++) {
+				if (i != columns[k]) {
+					sum += elements[k] * x[columns[k]];
+				}
+				else {
+					d = elements[k];
+				}
+			}
+			x[i] = (b[i] - sum) / d;
+		}
+		if (abs((*this) * x - b) < Tol) { break; }
+	}
+	return x;
 }
