@@ -3,18 +3,15 @@
 #include"vector_operations.h"
 #include<fstream>
 #include<chrono>
+#include <numbers>
 
 
 int main() {
-	std::vector<double> A = {	5, 2, 0, 2,
-								2, 9 ,5, 1,
-								0, 5, 8, 0,
-								2, 1, 0, 3 };
-	simple_matrix S(A, 4);
+	std::vector<double> A = { 0.09, 0.18, 0, 0.18, 0.54, 0.09, 0, 0.09, 0.9 };
+	simple_matrix S(A, 3);
 	CSR M(S);
-	std::vector<double> correct = { 1, 1, 1, 1 };
-	std::vector<double> x0 = { 10, 10, 10, 10 };
-	std::vector<double> b = M * correct;
+	std::vector<double> x0 = { 0, 0, 0 };
+	std::vector<double> b = { 100, 150, 200 };
 
 	std::ofstream file_time, file_error, file_iter;
 	
@@ -23,12 +20,12 @@ int main() {
 	file_iter.open( "../time_test_results/MPI_iter.txt");
 	for (int i = 1; i < 1000; i++) {
 		auto start = std::chrono::high_resolution_clock::now();
-		std::vector<double> res = M.MPI(b, x0, i, 0);
+		std::vector<double> res = M.MPI(b, x0, i, 1e-20);
 		auto end =	 std::chrono::high_resolution_clock::now();
 		double error = abs(M * res - b);
 		auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 		file_time  << time  << "\n";
-		file_error << error << "\n";
+		file_error << std::log(error) << "\n";
 		file_iter  << i << "\n";
 	}
 	file_time.close();
@@ -41,12 +38,12 @@ int main() {
 	file_iter.open( "../time_test_results/Cheb_iter.txt");
 	for (int i = 1; i < 1000; i++) {
 		auto start = std::chrono::high_resolution_clock::now();
-		std::vector<double> res = M.Cheb_accel(b, x0, i, 0, 0, M.lambda_max()+1);
+		std::vector<double> res = M.Cheb_accel(b, x0, i, 1e-20, 0, M.lambda_max()+1);
 		auto end =   std::chrono::high_resolution_clock::now();
 		double error = abs(M * res - b);
 		auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 		file_time  << time  << "\n";
-		file_error << error << "\n";
+		file_error << std::log(error) << "\n";
 		file_iter  << i << "\n";
 	}
 	file_time.close();
@@ -59,12 +56,12 @@ int main() {
 	file_iter.open( "../time_test_results/Jacobi_iter.txt");
 	for (int i = 1; i < 1000; i++) {
 		auto start = std::chrono::high_resolution_clock::now();
-		std::vector<double> res = M.Jacobi(b, x0, i, 0);
+		std::vector<double> res = M.Jacobi(b, x0, i, 1e-20);
 		auto end =   std::chrono::high_resolution_clock::now();
 		double error = abs(M * res - b);
 		auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 		file_time  << time  << "\n";
-		file_error << error << "\n";
+		file_error << std::log(error) << "\n";
 		file_iter  << i << "\n";
 	}
 	file_time.close();
@@ -77,12 +74,12 @@ int main() {
 	file_iter.open( "../time_test_results/GS_iter.txt");
 	for (int i = 1; i < 1000; i++) {
 		auto start = std::chrono::high_resolution_clock::now();
-		std::vector<double> res = M.GS(b, x0, i, 0);
+		std::vector<double> res = M.GS(b, x0, i, 1e-20);
 		auto end =   std::chrono::high_resolution_clock::now();
 		double error = abs(M * res - b);
 		auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 		file_time  << time  << "\n";
-		file_error << error << "\n";
+		file_error << std::log(error) << "\n";
 		file_iter  << i << "\n";
 	}
 	file_time.close();

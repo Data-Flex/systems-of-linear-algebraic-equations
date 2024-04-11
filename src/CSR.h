@@ -1,7 +1,7 @@
 #pragma once
 #include "simple_matrix.h"
 #include "vector_operations.h"
-#include <math.h>
+#include <cmath>
 
 class CSR
 {
@@ -19,6 +19,12 @@ public:
 	std::vector<double> simmetrical_GS(		const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
 	std::vector<double> gradient_descent(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol);
 	double lambda_max();
+
+	std::vector<double> cheb_MPI(				const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double p);
+	std::vector<double> cheb_Jacobi(			const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double p);
+	std::vector<double> cheb_GS(				const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double p);
+	std::vector<double> cheb_simmetrical_GS(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double p);
+	std::vector<double> cheb_gradient_descent(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double p);
 private:
 	std::vector<double> elements;
 	std::vector<int> columns;
