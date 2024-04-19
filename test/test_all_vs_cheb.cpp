@@ -191,4 +191,21 @@ int main() {
 	//file_error.close();
 	//file_iter.close();
 	//std::cout << "we ok" << "\n";
+	/*file_time.open("../time_test_results/9_time.txt");
+	file_error.open("../time_test_results/9_error.txt");
+	file_iter.open("../time_test_results/9_iter.txt");
+	for (int i = 1; i < 1000; i++) {
+		auto start = std::chrono::high_resolution_clock::now();
+		std::vector<double> res = M.conjurate_gradient(b, x0, i, 1e-20);
+		auto end = std::chrono::high_resolution_clock::now();
+		double error = abs(M * res - b);
+		auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+		file_time << time << "\n";
+		file_error << std::log(error) << "\n";
+		file_iter << i << "\n";
+	}
+	file_time.close();
+	file_error.close();
+	file_iter.close();*/
+	//----------------------------------------------------------------------------------------------
 }

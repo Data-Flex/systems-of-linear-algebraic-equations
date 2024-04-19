@@ -284,3 +284,26 @@ std::vector<double> CSR::cheb_gradient_descent(	const std::vector <double>& b, c
 	}
 	return res;
 }
+
+
+
+
+
+std::vector<double> CSR::conjurate_gradient(const std::vector<double>& b, const std::vector<double>& x0, const int Nmax, const double Tol) {
+	std::vector<double> current = x0;
+	std::vector<double> discrepancy = (*this)*current - b;
+	std::vector<double> orth = discrepancy;
+	for (size_t n = 0; n < Nmax; n++) {
+		double alpha = (orth * discrepancy) / (orth * ((*this) * orth));
+		current = current - alpha * orth;
+		std::vector <double> discrepancy1 = (*this) * current - b;
+		if (orth * orth == 0)
+			return current;
+		double beta = (discrepancy1 * discrepancy1) / (orth * discrepancy);
+		discrepancy = discrepancy1;
+		orth = discrepancy + beta * orth;
+
+		if (not (abs((*this) * current - b) >= Tol)) { break; }
+	}
+	return current;
+}
