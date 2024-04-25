@@ -2,6 +2,9 @@
 #include "simple_matrix.h"
 #include "vector_operations.h"
 #include <cmath>
+#include <algorithm> 
+#include<iostream>
+#include<string>
 
 class CSR
 {
@@ -27,7 +30,8 @@ public:
 	std::vector<double> cheb_gradient_descent(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol, const double p);
 
 
-	std::vector<double> conjurate_gradient(const std::vector<double>& b, const std::vector<double>& x0, const int Nmax, const double Tol);
+	std::vector<double> conjurate_gradient(		const std::vector<double>& b, const std::vector<double>& x0,				const int Nmax,	const double Tol);
+	std::vector<double> GMRES(					const std::vector<double>& b, const std::vector<double>& x0, int const& m,	const int Nmax, const double Tol);
 private:
 	std::vector<double> elements;
 	std::vector<int> columns;

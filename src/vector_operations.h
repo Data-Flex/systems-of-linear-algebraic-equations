@@ -15,3 +15,5 @@ double max(std::vector<double> const& v);
 int max(std::vector<int> const& v);
 
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec);
+
+std::vector<double> givens_rots(std::vector<double> const& h, std::vector<std::pair<double, double>> const& rots);

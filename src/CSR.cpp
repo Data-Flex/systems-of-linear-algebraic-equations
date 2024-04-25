@@ -1,5 +1,7 @@
 #include"CSR.h"
 
+
+
 CSR::CSR(const simple_matrix& M) {
 	int count_nonzero = 0;
 	nonzero.push_back(0);
@@ -147,10 +149,8 @@ std::vector<double> CSR::Cheb_accel(		const std::vector <double>& b, const std::
 std::vector<double> CSR::simmetrical_GS(	const std::vector <double>& b, const std::vector <double>& x0, const int Nmax, const double Tol) {
 	std::vector<double> x = x0;
 	double d = 0;
-	//double sum = 0;
-	std::cout << "gs ok" << "\n";
+	//double sum = 0;;
 	for (int N = 0; N < Nmax; N++) {
-		std::cout << "gs ok" << "\n";
 		for (int i = 0; i < x.size()/*nonzero.size() - 1*/; i++) {
 			x[i] = b[i];
 			d = 0;
@@ -167,7 +167,6 @@ std::vector<double> CSR::simmetrical_GS(	const std::vector <double>& b, const st
 			//x[i] = (b[i] - sum) / d;
 			x[i] /= d;
 		}
-		std::cout << "gs ok" << "\n";
 		for (int i = nonzero.size() - 1; i >= 0; i--) {
 			d = 0;
 			//sum = 0;
@@ -184,11 +183,9 @@ std::vector<double> CSR::simmetrical_GS(	const std::vector <double>& b, const st
 			//x[i] = (x[i] - sum) / d;
 			x[i] /= d;
 		}
-		std::cout << "gs ok" << "\n";
 		if (abs((*this) * x - b) < Tol) { break; }
 		
 	}
-	std::cout << "gs ok" << "\n";
 	return x;
 }
 
@@ -306,4 +303,60 @@ std::vector<double> CSR::conjurate_gradient(const std::vector<double>& b, const 
 		if (not (abs((*this) * current - b) >= Tol)) { break; }
 	}
 	return current;
+}
+
+
+
+
+
+std::vector<double> CSR::GMRES(const std::vector<double>& b, const std::vector<double>& x0, int const& m, const int Nmax, const double Tol)
+{
+	std::vector<double> r0, x, x0_, vk, h, h_rots, y, by;                                
+	std::vector<std::pair<double, double>> giv_rots;
+	x = x0;
+	for (std::size_t it = 0; it < Nmax; ++it)
+	{
+		x0_ = x;
+		r0 = (*this)*x0_ - b;
+		simple_matrix V(r0 / abs(r0), 1);
+
+		simple_matrix H({}, 0);
+		giv_rots = std::vector<std::pair<double, double>>(0);
+
+		for (std::size_t k = 1; k <= m; ++k)
+		{
+			vk = (*this) * V.col(k - 1);
+			h = std::vector<double>(k + 1);
+			for (std::size_t i = 0; i < k; ++i)
+			{
+				h[i] = ((*this) * V.col(k - 1)) * (V.col(i));
+				vk = vk - h[i] * V.col(i);
+			}
+			h[k] = abs(vk);
+			vk = vk / h[k];
+
+			h_rots = { h[k - 1], h[k] };
+			giv_rots.push_back(std::make_pair(h_rots[0] / abs(h_rots), (-1) * h_rots[1] / abs(h_rots)));
+
+			h = givens_rots(h, giv_rots);
+			h.pop_back();
+
+			H = add_col_H(H, h);
+
+			by = std::vector<double>(k);
+			by[0] = abs(r0);
+			for (std::size_t i = 1; i < k; ++i) by[i] = 0;
+
+			std::reverse(giv_rots.begin(), giv_rots.end());
+			by = givens_rots(by, giv_rots);
+
+			y = Inverse_Gauss_Method(H, (-1.) * by);
+
+			x = x0_ + V * y;
+			if (not (abs((*this) * x - b) >= Tol)) { break; }
+
+			V = add_col(V, vk);
+		}
+	}
+	return x;
 }
